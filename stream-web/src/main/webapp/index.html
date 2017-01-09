@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="ISO-8859-1">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+</head>
+<body>
+
+<button id="consume-multipart">Consume Multipart</button> <br>
+<button id="consume-paging">Consume Paging</button> <br>
+
+<script>
+$(document).ready(function(){
+	$('#consume-multipart').click(function() {
+        $.ajax({
+            type: "GET",
+            url: "/pixel/multipart",
+            async: false,
+            dataType: 'json',
+            complete: function (data) {
+	            console.log(data,'Oi');
+	        }
+        });
+	});
+});
+</script>
+
+</body>
+</html>
