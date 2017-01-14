@@ -37,17 +37,10 @@ public class PixelController {
 	@Autowired
 	private MultipartJsonService multipartWriterService;
 	
-	@RequestMapping(produces="text/html")
-	public String getPixelsUI() throws IOException {
-		return "<a href=\"/pixel/all\">pixel.json</a><br>" +
-				"<a href=\"/pixel/multipart\">pixel.json</a><br>";
-	}
-
 	@RequestMapping("all")
 	public Collection<Pixel> getPixels() throws IOException {
 		return imageService.getPixel("waterfall.jpg");
 	}
-
 
 	@RequestMapping(value="multipart", produces="text/json")
 	public void getPixels(HttpServletResponse response) throws IOException {

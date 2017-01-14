@@ -17,7 +17,7 @@ public class MultipartJsonService {
 	
 	public <T> void streamJsonArray(OutputStream outputStream, Iterator<T> iterator, String boundary) throws IOException {
 		byte [] boundaryStart = ("--" + boundary + "\r\nContent-type: text/json; charset=us-ascii \r\n\r\n").getBytes();
-		byte [] boundaryLimitData = ("\r\n--" + boundary + "\r\nContent-type: text/json; charset=us-ascii \r\n\r\n").getBytes();
+		byte [] boundaryLimitData = ("\r\n\r\n--" + boundary + "\r\nContent-type: text/json; charset=us-ascii \r\n\r\n").getBytes();
 		byte [] boundaryEnd = ("\r\n--" + boundary + "--").getBytes();
 
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();

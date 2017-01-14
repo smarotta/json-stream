@@ -81,5 +81,5 @@ public class Pixel {
 	
 	public void setB(int b) {
 		this.b = b;
-	}	
+	}
 }
