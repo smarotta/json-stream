@@ -21,6 +21,9 @@ public class PixelView extends Canvas implements View<Pixel, PixelViewListener>,
 
 	private static final long serialVersionUID = 3977607004204039955L;
 	
+	private static final int WIDTH = 800;
+	private static final int HEIGHT = 600;
+	
 	private PixelViewListener listener;
 	private BufferedImage backBuffer;
 	//private BufferStrategy bufferStrategy; 
@@ -42,11 +45,11 @@ public class PixelView extends Canvas implements View<Pixel, PixelViewListener>,
 		ctrlPane.add(startButton);
 
 		JPanel panelView = new JPanel();
-		panelView.setPreferredSize(new Dimension(800,600));
+		panelView.setPreferredSize(new Dimension(WIDTH,HEIGHT));
 		panelView.setLayout(null);
 		
 		// setup our canvas size and put it into the content of the frame
-		setBounds(0,0,800,600);
+		setBounds(0,0,WIDTH,HEIGHT);
 		panelView.add(this);
 		
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, ctrlPane, panelView);
@@ -67,10 +70,10 @@ public class PixelView extends Canvas implements View<Pixel, PixelViewListener>,
 		//createBufferStrategy(1);
 		//bufferStrategy = getBufferStrategy();
 		
-		backBuffer = new BufferedImage(800, 600, BufferedImage.TYPE_4BYTE_ABGR);
+		backBuffer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D backBufferGraphics = backBuffer.createGraphics();
 		backBufferGraphics.setColor(Color.GREEN);
-		backBufferGraphics.fillRect(0, 0, 800, 600);
+		backBufferGraphics.fillRect(0, 0, WIDTH, HEIGHT);
 	}
 
 	@Override
@@ -103,6 +106,11 @@ public class PixelView extends Canvas implements View<Pixel, PixelViewListener>,
 
 	public void actionPerformed(ActionEvent e) {
 		if ("start".equals(e.getActionCommand())) {
+			Graphics2D backBufferGraphics = backBuffer.createGraphics();
+			backBufferGraphics.setColor(Color.GREEN);
+			backBufferGraphics.fillRect(0, 0, WIDTH, HEIGHT);
+			repaint();
+			
 			new Thread(new Runnable(){
 				public void run() {
 					listener.onStartCapture();
