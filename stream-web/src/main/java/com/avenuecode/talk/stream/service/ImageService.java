@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -18,8 +19,10 @@ import com.avenuecode.talk.stream.model.Pixel;
 @Component
 public class ImageService {
 	
-	public Collection<Pixel> getPixel(String file) throws IOException {
+	public Iterator<Pixel> getPixel(String file) throws IOException {
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream(file);
+		return new ImageServiceFileIterator(in);
+		/*
 		try {
 			BufferedImage image = ImageIO.read(in);
 			
@@ -32,6 +35,7 @@ public class ImageService {
 				for (int y = 0; y < width; y++) {
 					int argb = image.getRGB(y, x);
 					Pixel pixel = new Pixel(x, y, argb);
+					System.out.println("SERVER SIDE: " + Integer.toHexString(argb) + " " + x + ":" + y);
 					pixels.add(pixel);
 				}
 			}
@@ -40,5 +44,6 @@ public class ImageService {
 		} finally {
 			in.close();
 		}
+		*/
 	}	
 }

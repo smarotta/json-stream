@@ -1,5 +1,6 @@
 package com.avenuecode.talk.stream.reader.controller;
 
+import java.io.IOException;
 import java.util.Iterator;
 
 import com.avenuecode.talk.stream.reader.controller.model.Pixel;
@@ -20,13 +21,17 @@ public class PixelController implements Controller, PixelViewListener {
 	}
 
 	public void onStartCapture() {
-		Iterator<Pixel> pixelIterator = pixelService.getPixels();
-		pixelView.startFrame();
-		while(pixelIterator.hasNext()) {
-			Pixel pixel = pixelIterator.next();
-			pixelView.update(pixel);
+		try {
+			Iterator<Pixel> pixelIterator = pixelService.getPixels();
+			pixelView.startFrame();
+			while(pixelIterator.hasNext()) {
+				Pixel pixel = pixelIterator.next();
+				pixelView.update(pixel);
+			}
+			pixelView.finishFrame();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		pixelView.finishFrame();
 	}
 
 	public void onStopCapture() {

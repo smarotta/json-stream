@@ -15,9 +15,18 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 @Component
 public class MultipartJsonService {
 	
+	private static final int MULTIPART_SIZE = 2;
+	
+	private void flushJsonGenerator(JsonGenerator jsonGenerator, OutputStream outputStream, ByteArrayOutputStream bout) throws IOException {
+		jsonGenerator.flush();
+		bout.writeTo(outputStream);
+		bout.reset();
+		outputStream.flush();
+	}
+	
 	public <T> void streamJsonArray(OutputStream outputStream, Iterator<T> iterator, String boundary) throws IOException {
-		byte [] boundaryStart = ("--" + boundary + "\r\nContent-type: text/json; charset=us-ascii \r\n\r\n").getBytes();
-		byte [] boundaryLimitData = ("\r\n\r\n--" + boundary + "\r\nContent-type: text/json; charset=us-ascii \r\n\r\n").getBytes();
+		byte [] boundaryStart = ("--" + boundary + "\r\n\r\n").getBytes();
+		byte [] boundaryLimitData = ("\r\n\r\n--" + boundary + "\r\n\r\n").getBytes();
 		byte [] boundaryEnd = ("\r\n--" + boundary + "--").getBytes();
 
 		ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -28,29 +37,36 @@ public class MultipartJsonService {
 		JsonGenerator jsonGenerator = jsonFactory.createGenerator(bout);
 		jsonGenerator.setCodec(objectMapper);
 		
-		jsonGenerator.writeStartArray();
+		
 		for (long x=0l; iterator.hasNext(); x++) {
 			if (x == 0l) {
 				outputStream.write(boundaryStart);
-			} else {
+				jsonGenerator.writeStartArray();
+			} else if (x % MULTIPART_SIZE == 0) {
+				jsonGenerator.writeEndArray();
+				flushJsonGenerator(jsonGenerator, outputStream, bout);
 				outputStream.write(boundaryLimitData);
+				jsonGenerator.writeStartArray();
 			}
 			
 			jsonGenerator.writeObject(iterator.next());
-			bout.writeTo(outputStream);
-			bout.reset();
 			
-			outputStream.flush();
-			
+			flushJsonGenerator(jsonGenerator, outputStream, bout);
+
+			/*
 			if (x > 10) {
 				break;
 			}
+			*/
 		}
 		jsonGenerator.writeEndArray();
-		bout.writeTo(outputStream);
-		bout.reset();
+		flushJsonGenerator(jsonGenerator, outputStream, bout);
 		outputStream.write(boundaryEnd);
 		outputStream.flush();
 	}
+
+
+
+	
 	
 }
