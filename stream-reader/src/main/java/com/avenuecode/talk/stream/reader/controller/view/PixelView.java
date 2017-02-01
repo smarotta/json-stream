@@ -7,21 +7,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.util.Iterator;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.border.TitledBorder;
 
-import com.avenuecode.talk.stream.reader.controller.Controller;
 import com.avenuecode.talk.stream.reader.controller.model.Pixel;
 
 public class PixelView extends Canvas implements View<Pixel, PixelViewListener>, ActionListener {

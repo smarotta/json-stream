@@ -70,7 +70,8 @@ public class ImageServiceFileIterator implements Iterator<Pixel>{
 		currentX++;
 		currentPixel++;
 		
-		if (currentPixel % 1000 == 0) {
+		/*
+		if (currentPixel % 10000 == 0) {
 			Runtime runtime = Runtime.getRuntime();
 			NumberFormat format = NumberFormat.getInstance();
 			StringBuilder sb = new StringBuilder();
@@ -86,6 +87,7 @@ public class ImageServiceFileIterator implements Iterator<Pixel>{
 			
 			System.out.println(sb);
 		}
+		*/
 		//System.out.println("SERVER SIDE: " + Integer.toHexString(pixel.getARGB()) + " " + pixel.getX() + ":" + pixel.getY());
 		return pixel;
 	}

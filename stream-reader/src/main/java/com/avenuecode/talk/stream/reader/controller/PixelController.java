@@ -1,7 +1,9 @@
 package com.avenuecode.talk.stream.reader.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import com.avenuecode.talk.stream.reader.controller.model.Pixel;
 import com.avenuecode.talk.stream.reader.controller.view.PixelView;
@@ -20,7 +22,7 @@ public class PixelController implements Controller, PixelViewListener {
 		pixelView.initialize();
 	}
 
-	public void onStartCapture() {
+	private void startMultipartCapture() {
 		try {
 			Iterator<Pixel> pixelIterator = pixelService.getPixels();
 			pixelView.startFrame();
@@ -32,6 +34,30 @@ public class PixelController implements Controller, PixelViewListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void startPaginatedCapture() {
+		try {
+			pixelView.startFrame();
+			List<Pixel> pixels = new ArrayList<Pixel>();
+			int pageSize = 1000;
+			int offset = 0;
+			do {
+				pixels = pixelService.getPixels(offset, pageSize);
+				offset += pageSize;
+				for(Pixel pixel:pixels) {
+					pixelView.update(pixel);
+				}
+			} while(!pixels.isEmpty());
+			pixelView.finishFrame();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void onStartCapture() {
+		startMultipartCapture();
+		//startPaginatedCapture();
 	}
 
 	public void onStopCapture() {
