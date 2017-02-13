@@ -16,7 +16,7 @@ public class PixelService {
 	
 	public List<Pixel> getPixels(int offset, int count) throws IOException {
 		
-		URL url = new URL(PIXEL_SERVICE + "/pixel/offset/" + offset + "/count/" + count);
+		URL url = new URL(PIXEL_SERVICE + "/pixel/f6d64ae2-822b-4b02-b53e-b7578178703b/offset/" + offset + "/count/" + count);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("GET");
 		
@@ -26,7 +26,7 @@ public class PixelService {
 	}
 	
 	public PixelServiceIterator getPixels() throws IOException {
-		URL url = new URL(PIXEL_SERVICE + "/pixel/multipart");
+		URL url = new URL(PIXEL_SERVICE + "/pixel/f6d64ae2-822b-4b02-b53e-b7578178703b");
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("GET");
 		

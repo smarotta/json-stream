@@ -1,6 +1,7 @@
 package com.avenuecode.talk.stream.controller;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -9,53 +10,79 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import javax.websocket.server.PathParam;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.avenuecode.talk.stream.model.Pixel;
-import com.avenuecode.talk.stream.service.ImageService;
+import com.avenuecode.talk.stream.service.FileImageService;
+import com.avenuecode.talk.stream.service.IteratorListener;
+import com.avenuecode.talk.stream.service.JdbcImageService;
 import com.avenuecode.talk.stream.service.MultipartJsonService;
+import com.avenuecode.talk.stream.service.MultipartJsonServiceWriter;
+import com.avenuecode.talk.stream.service.RawJdbcImageService;
+import com.avenuecode.talk.stream.service.dao.ImageDAORawJdbc;
+
 
 @RequestMapping("/pixel")
 @RestController
 public class PixelController {
 	
+	private static final Logger LOGGER = LoggerFactory.getLogger(PixelController.class);
+	
 	@Autowired
-	private ImageService imageService;
+	private FileImageService fileImageService;
+	
+	@Autowired
+	private RawJdbcImageService jdbcImageService;
 	
 	@Autowired
 	private MultipartJsonService multipartWriterService;
 	
-	@RequestMapping(value="/offset/{offset}/count/{count}", produces="application/json")
-	public @ResponseBody List<Pixel> getPaginatedPixels(@PathVariable("offset") int offset, @PathVariable("count") int count) throws IOException {
-		List<Pixel> pixels = new ArrayList<Pixel>(count);
-		Iterator<Pixel> iterator = imageService.getPixel("waterfall.jpg");
-		for(int x=0; x < offset; x++){
-			if (iterator.hasNext()) {
-				iterator.next();
-			}
-		}
+	@RequestMapping(value="/{imageId}/offset/{offset}/count/{count}", produces="application/json")
+	public @ResponseBody List<Pixel> getPaginatedPixels(@PathVariable("imageId") String imageId, @PathVariable("offset") int offset, @PathVariable("count") int count) throws IOException {
+
+		LOGGER.info("Requested offset:{} count:{}", offset, count);
 		
-		for(int x=0; x < count; x++){
-			if (iterator.hasNext()) {
-				pixels.add(iterator.next());
+		final List<Pixel> pixels = new ArrayList<Pixel>(count);
+		jdbcImageService.readPixels(new IteratorListener() {
+			@Override
+			public void onStart() throws Exception {
 			}
-		}
+			
+			@Override
+			public void onPixelRead(Pixel pixel) throws Exception {
+				pixels.add(pixel);
+			}
+			
+			@Override
+			public void onFinish(Exception error) {
+			}
+		}, imageId, offset, count);
 		
 		return pixels;
 	}
 	
-	@RequestMapping(value="multipart", produces="application/json")
-	public void getMultipartPixels(HttpServletResponse response) throws IOException {
-		Iterator<Pixel> iterator = imageService.getPixel("waterfall.jpg");
-		
+	@RequestMapping(value="/{imageId}", produces="application/json")
+	public void getMultipartPixels(HttpServletResponse response, @PathVariable("imageId") String imageId) throws IOException {
 		String boundary = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 16);
 		response.setHeader("Content-Type", "multipart/mixed; boundary=" + boundary + "");
 		
-		multipartWriterService.<Pixel>streamJsonArray(response.getOutputStream(), iterator, boundary);
+		MultipartJsonServiceWriter multipartJsonWriter = new MultipartJsonServiceWriter(response.getOutputStream(), boundary);
+		jdbcImageService.readPixels(multipartJsonWriter, imageId);
 	}
 
+	/*
+	@RequestMapping(value="/createTest", method=RequestMethod.GET, produces="application/json")
+	public void a() throws IOException {
+		jdbcImageService.saveImage("waterfall.jpg", "Waterfall");
+	}
+	*/
+	
 }

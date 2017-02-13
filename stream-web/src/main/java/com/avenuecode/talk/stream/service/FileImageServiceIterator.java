@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 
 import com.avenuecode.talk.stream.model.Pixel;
 
-public class ImageServiceFileIterator implements Iterator<Pixel>{
+public class FileImageServiceIterator implements Iterator<Pixel>{
 
 	private BufferedImage image;
 	private InputStream in;
@@ -23,7 +23,7 @@ public class ImageServiceFileIterator implements Iterator<Pixel>{
 	private int height;
 	private int totalPixels;
 	
-	public ImageServiceFileIterator(InputStream in) {
+	public FileImageServiceIterator(InputStream in) {
 		this.in = in;
 	}
 	
@@ -69,26 +69,6 @@ public class ImageServiceFileIterator implements Iterator<Pixel>{
 		
 		currentX++;
 		currentPixel++;
-		
-		/*
-		if (currentPixel % 10000 == 0) {
-			Runtime runtime = Runtime.getRuntime();
-			NumberFormat format = NumberFormat.getInstance();
-			StringBuilder sb = new StringBuilder();
-			long maxMemory = runtime.maxMemory();
-			long allocatedMemory = runtime.totalMemory();
-			long freeMemory = runtime.freeMemory();
-			sb.append("Current progress ").append(currentPixel).append("/").append(totalPixels).append("\r\n");
-			sb.append("free memory: ").append(format.format(freeMemory / 1024)).append("\r\n");
-			sb.append("allocated memory: ").append(format.format(allocatedMemory / 1024)).append("\r\n");
-			sb.append("max memory: ").append(format.format(maxMemory / 1024)).append("\r\n");
-			sb.append("total free memory: ").append(format.format((freeMemory + (maxMemory - allocatedMemory)) / 1024)).append("\r\n");
-			sb.append("======================");
-			
-			System.out.println(sb);
-		}
-		*/
-		//System.out.println("SERVER SIDE: " + Integer.toHexString(pixel.getARGB()) + " " + pixel.getX() + ":" + pixel.getY());
 		return pixel;
 	}
 }

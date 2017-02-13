@@ -13,7 +13,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.JTextField;
 
 import com.avenuecode.talk.stream.reader.controller.model.Pixel;
 
@@ -26,7 +25,6 @@ public class PixelView extends Canvas implements View<Pixel, PixelViewListener>,
 	
 	private PixelViewListener listener;
 	private BufferedImage backBuffer;
-	//private BufferStrategy bufferStrategy; 
 	
 	public void setListener(PixelViewListener listener) {
 		this.listener = listener;
@@ -34,15 +32,18 @@ public class PixelView extends Canvas implements View<Pixel, PixelViewListener>,
 	
 	public void initialize() {		
 		// Create views swing UI components 
-		JTextField searchTermTextField = new JTextField(26);
-		JButton startButton = new JButton("Start");
-		startButton.setActionCommand("start");
-		startButton.addActionListener(this);
+		JButton startMultipartButton = new JButton("Start Multipart");
+		startMultipartButton.setActionCommand("start_multipart");
+		startMultipartButton.addActionListener(this);
+
+		JButton startPagingButton = new JButton("Start Paginating");
+		startPagingButton.setActionCommand("start_paginating");
+		startPagingButton.addActionListener(this);
 
 		// Set the view layout
 		JPanel ctrlPane = new JPanel();
-		ctrlPane.add(searchTermTextField);
-		ctrlPane.add(startButton);
+		ctrlPane.add(startMultipartButton);
+		ctrlPane.add(startPagingButton);
 
 		JPanel panelView = new JPanel();
 		panelView.setPreferredSize(new Dimension(WIDTH,HEIGHT));
@@ -77,27 +78,20 @@ public class PixelView extends Canvas implements View<Pixel, PixelViewListener>,
 	}
 
 	@Override
-	public void paint(Graphics g) {
+	public void paint(Graphics graphics) {
+		Graphics2D g = (Graphics2D)graphics;
 		g.drawImage(backBuffer, 0, 0, null);
 	}
 	
 	public void startFrame() {
 		
 	}
-	
+
 	public void update(Pixel pixel) {
 		Graphics2D g = backBuffer.createGraphics();
 		g.setColor(new Color(pixel.getARGB(), true));
-		g.drawLine(pixel.getX(), pixel.getY(), pixel.getX() + 10, pixel.getY());
+		g.drawLine(pixel.getX(), pixel.getY(), pixel.getX(), pixel.getY());
 		repaint();
-		/*
-		try {
-			Thread.sleep(10);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		*/
 	}
 	
 	public void finishFrame() {
@@ -105,7 +99,7 @@ public class PixelView extends Canvas implements View<Pixel, PixelViewListener>,
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if ("start".equals(e.getActionCommand())) {
+		if ("start_multipart".equals(e.getActionCommand())) {
 			Graphics2D backBufferGraphics = backBuffer.createGraphics();
 			backBufferGraphics.setColor(Color.GREEN);
 			backBufferGraphics.fillRect(0, 0, WIDTH, HEIGHT);
@@ -113,7 +107,21 @@ public class PixelView extends Canvas implements View<Pixel, PixelViewListener>,
 			
 			new Thread(new Runnable(){
 				public void run() {
-					listener.onStartCapture();
+					listener.onStartCapture(true);
+				}
+				
+			}).start();
+		}
+		
+		if ("start_paginating".equals(e.getActionCommand())) {
+			Graphics2D backBufferGraphics = backBuffer.createGraphics();
+			backBufferGraphics.setColor(Color.MAGENTA);
+			backBufferGraphics.fillRect(0, 0, WIDTH, HEIGHT);
+			repaint();
+			
+			new Thread(new Runnable(){
+				public void run() {
+					listener.onStartCapture(false);
 				}
 				
 			}).start();

@@ -1,28 +1,32 @@
 package com.avenuecode.talk.stream.service;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.avenuecode.talk.stream.model.Pixel;
+import com.avenuecode.talk.stream.service.dao.ImageDAOJdbcTemplate;
 
 @Component
-public class ImageService {
+public class FileImageService {
 	
-	public Iterator<Pixel> getPixel(String file) throws IOException {
+	public Iterator<Pixel> getPixelIterator(String file) throws IOException {
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream(file);
-		return new ImageServiceFileIterator(in);
-		/*
+		return new FileImageServiceIterator(in);
+	}
+	
+	public List<Pixel> getPixelCollection(String file) throws IOException {
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream(file);
 		try {
 			BufferedImage image = ImageIO.read(in);
 			
@@ -34,16 +38,12 @@ public class ImageService {
 			for (int x = 0; x < height; x++) {
 				for (int y = 0; y < width; y++) {
 					int argb = image.getRGB(y, x);
-					Pixel pixel = new Pixel(x, y, argb);
-					System.out.println("SERVER SIDE: " + Integer.toHexString(argb) + " " + x + ":" + y);
-					pixels.add(pixel);
+					pixels.add(new Pixel(x, y, argb));
 				}
 			}
-			
 			return pixels;
 		} finally {
 			in.close();
 		}
-		*/
 	}	
 }
