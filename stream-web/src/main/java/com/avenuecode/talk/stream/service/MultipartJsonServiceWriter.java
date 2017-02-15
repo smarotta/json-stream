@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class MultipartJsonServiceWriter implements IteratorListener {
 
-	private static final int MULTIPART_SIZE = 2;
+	private static final int MULTIPART_SIZE = 500;
 	
 	private int currentPixelCount;
 	

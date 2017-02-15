@@ -16,7 +16,9 @@ public class PixelService {
 	
 	public List<Pixel> getPixels(int offset, int count) throws IOException {
 		
-		URL url = new URL(PIXEL_SERVICE + "/pixel/f6d64ae2-822b-4b02-b53e-b7578178703b/offset/" + offset + "/count/" + count);
+		//URL url = new URL(PIXEL_SERVICE + "/pixel/ba0abd8d-0b60-4150-bca8-36e75dc7b8a0/offset/" + offset + "/count/" + count);
+		URL url = new URL(PIXEL_SERVICE + "/pixel/b1274d1d-2143-4324-aa72-587f23b19104/offset/" + offset + "/count/" + count);
+		
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("GET");
 		
@@ -26,7 +28,9 @@ public class PixelService {
 	}
 	
 	public PixelServiceIterator getPixels() throws IOException {
-		URL url = new URL(PIXEL_SERVICE + "/pixel/f6d64ae2-822b-4b02-b53e-b7578178703b");
+		//URL url = new URL(PIXEL_SERVICE + "/pixel/ba0abd8d-0b60-4150-bca8-36e75dc7b8a0");
+		URL url = new URL(PIXEL_SERVICE + "/pixel/b1274d1d-2143-4324-aa72-587f23b19104");
+		//URL url = new URL(PIXEL_SERVICE + "/pixel/ocean.jpg/file");
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setRequestMethod("GET");
 		

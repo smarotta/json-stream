@@ -1,7 +1,0 @@
-com/avenuecode/talk/stream/application/Application.class
-com/avenuecode/talk/stream/controller/PixelController.class
-com/avenuecode/talk/stream/service/ImageService.class
-com/avenuecode/talk/stream/controller/TestController$1.class
-com/avenuecode/talk/stream/controller/TestController.class
-com/avenuecode/talk/stream/model/Pixel.class
-com/avenuecode/talk/stream/service/MultipartJsonService.class

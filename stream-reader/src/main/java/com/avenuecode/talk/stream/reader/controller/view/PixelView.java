@@ -13,6 +13,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
 
 import com.avenuecode.talk.stream.reader.controller.model.Pixel;
 
@@ -22,6 +23,12 @@ public class PixelView extends Canvas implements View<Pixel, PixelViewListener>,
 	
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 600;
+	
+	private Pixel lastPixel;
+	
+	private long frameStart;
+	private long timeTaken;
+	private long pixelsRead;
 	
 	private PixelViewListener listener;
 	private BufferedImage backBuffer;
@@ -81,21 +88,42 @@ public class PixelView extends Canvas implements View<Pixel, PixelViewListener>,
 	public void paint(Graphics graphics) {
 		Graphics2D g = (Graphics2D)graphics;
 		g.drawImage(backBuffer, 0, 0, null);
+		
+		//draw cursor
+		if (lastPixel != null) {
+			g.setColor(Color.WHITE);
+			g.drawRect(lastPixel.getX() - 2, lastPixel.getY() - 2, 4, 4);
+		}
 	}
 	
 	public void startFrame() {
-		
+		pixelsRead = 0l;
+		frameStart = System.currentTimeMillis();
 	}
 
 	public void update(Pixel pixel) {
+		lastPixel = pixel;
+		timeTaken = System.currentTimeMillis() - frameStart;
+		pixelsRead++;
+		
 		Graphics2D g = backBuffer.createGraphics();
 		g.setColor(new Color(pixel.getARGB(), true));
 		g.drawLine(pixel.getX(), pixel.getY(), pixel.getX(), pixel.getY());
-		repaint();
+		
+		g.setColor(Color.BLACK);
+		g.fillRect(0, 0, 150, 50);
+		g.setColor(Color.GREEN);
+		g.drawString(timeTaken + "ms", 5, 15);
+		g.drawString(pixelsRead + " pixels read", 5, 30);
+		g.drawString(Math.floor(pixelsRead / (timeTaken / 1000.0)) + "pxl/s", 5, 45);
+		
+		
+		repaint(pixel.getX() - 5, pixel.getY() - 5, 10, 10);
+		repaint(0, 0, 150, 50);
 	}
 	
 	public void finishFrame() {
-		
+		timeTaken = System.currentTimeMillis() - frameStart;
 	}
 
 	public void actionPerformed(ActionEvent e) {

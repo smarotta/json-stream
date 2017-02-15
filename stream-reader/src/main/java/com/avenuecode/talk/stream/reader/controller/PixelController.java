@@ -40,7 +40,7 @@ public class PixelController implements Controller, PixelViewListener {
 		try {
 			pixelView.startFrame();
 			List<Pixel> pixels = new ArrayList<Pixel>();
-			int pageSize = 100;
+			int pageSize = 500;
 			int offset = 0;
 			do {
 				pixels = pixelService.getPixels(offset, pageSize);

@@ -43,13 +43,13 @@ public class PixelController {
 	private RawJdbcImageService jdbcImageService;
 	
 	@Autowired
+	private JdbcImageService jdbcTemplateImageService;
+	
+	@Autowired
 	private MultipartJsonService multipartWriterService;
 	
 	@RequestMapping(value="/{imageId}/offset/{offset}/count/{count}", produces="application/json")
 	public @ResponseBody List<Pixel> getPaginatedPixels(@PathVariable("imageId") String imageId, @PathVariable("offset") int offset, @PathVariable("count") int count) throws IOException {
-
-		LOGGER.info("Requested offset:{} count:{}", offset, count);
-		
 		final List<Pixel> pixels = new ArrayList<Pixel>(count);
 		jdbcImageService.readPixels(new IteratorListener() {
 			@Override
@@ -77,12 +77,27 @@ public class PixelController {
 		MultipartJsonServiceWriter multipartJsonWriter = new MultipartJsonServiceWriter(response.getOutputStream(), boundary);
 		jdbcImageService.readPixels(multipartJsonWriter, imageId);
 	}
+	
+	@RequestMapping(value="/{imageId}/file", produces="application/json")
+	public void getMultipartPixelsFromFile(HttpServletResponse response, @PathVariable("imageId") String imageId) throws Exception {
+		String boundary = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 16);
+		response.setHeader("Content-Type", "multipart/mixed; boundary=" + boundary + "");
+		
+		MultipartJsonServiceWriter multipartJsonWriter = new MultipartJsonServiceWriter(response.getOutputStream(), boundary);
+		Iterator<Pixel> it = fileImageService.getPixelIterator(imageId);
+		try {
+			multipartJsonWriter.onStart();
+			while(it.hasNext()) {
+				multipartJsonWriter.onPixelRead(it.next());
+			}
+		}finally {
+			multipartJsonWriter.onFinish(null);
+		}
+	}
 
-	/*
 	@RequestMapping(value="/createTest", method=RequestMethod.GET, produces="application/json")
 	public void a() throws IOException {
-		jdbcImageService.saveImage("waterfall.jpg", "Waterfall");
+		jdbcTemplateImageService.saveImage("ocean.jpg", "Ocean");
 	}
-	*/
 	
 }

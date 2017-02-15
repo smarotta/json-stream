@@ -25,7 +25,7 @@ public class ImageDAOJdbcTemplate {
 	
 	public Iterator<Pixel> getPixels(String imageId) {
 		SqlRowSet rowSet = jdbcTemplate.queryForRowSet(
-				"SELECT y, x, a, r, g, b FROM \"PIXEL\" WHERE \"IMAGE_ID\"=?", imageId);
+				"SELECT x, y, a, r, g, b FROM \"PIXEL\" WHERE \"IMAGE_ID\"=?", imageId);
 		
 		return new ImageDAOPixelIterator(new Decoder() {
 			@Override

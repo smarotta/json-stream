@@ -35,9 +35,9 @@ public class FileImageService {
 			
 			List<Pixel> pixels = new ArrayList<Pixel>(width*height);
 	
-			for (int x = 0; x < height; x++) {
-				for (int y = 0; y < width; y++) {
-					int argb = image.getRGB(y, x);
+			for (int x = 0; x < width; x++) {
+				for (int y = 0; y < height; y++) {
+					int argb = image.getRGB(x, y);
 					pixels.add(new Pixel(x, y, argb));
 				}
 			}

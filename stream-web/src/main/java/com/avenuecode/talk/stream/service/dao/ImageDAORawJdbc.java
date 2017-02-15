@@ -3,7 +3,6 @@ package com.avenuecode.talk.stream.service.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
@@ -27,9 +26,9 @@ public class ImageDAORawJdbc {
 			listener.onStart();
 			
 			connection = dataSource.getConnection();
-			PreparedStatement statement = connection.prepareStatement("SELECT x, y, a, r, g, b FROM \"PIXEL\" WHERE \"IMAGE_ID\"=? ORDER BY x, y ASC");
+			PreparedStatement statement = connection.prepareStatement("SELECT x, y, a, r, g, b, (0.2126*r + 0.7152*g + 0.0722*b) as luminance FROM \"PIXEL\" WHERE \"IMAGE_ID\"=? ORDER BY luminance ASC");
 			statement.setString(1, imageId);
-			statement.setFetchSize(10);
+			statement.setFetchSize(100);
 			ResultSet resultSet = statement.executeQuery();
 			
 			while(resultSet.next()) {
@@ -64,11 +63,11 @@ public class ImageDAORawJdbc {
 			listener.onStart();
 			
 			connection = dataSource.getConnection();
-			PreparedStatement statement = connection.prepareStatement("SELECT x, y, a, r, g, b FROM \"PIXEL\" WHERE \"IMAGE_ID\"=? ORDER BY x, y ASC OFFSET ? LIMIT ?");
+			PreparedStatement statement = connection.prepareStatement("SELECT x, y, a, r, g, b, (0.2126*r + 0.7152*g + 0.0722*b) as luminance FROM \"PIXEL\" WHERE \"IMAGE_ID\"=? ORDER BY luminance ASC OFFSET ? LIMIT ?");
 			statement.setString(1, imageId);
 			statement.setInt(2, offset);
 			statement.setInt(3, count);
-			statement.setFetchSize(10);
+			statement.setFetchSize(100);
 			ResultSet resultSet = statement.executeQuery();
 			
 			while(resultSet.next()) {
