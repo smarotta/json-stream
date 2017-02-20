@@ -1,4 +1,4 @@
-package com.avenuecode.talk.stream.reader.controller.model;
+package com.avenuecode.talk.stream.reader.model;
 
 public class Pixel {
 

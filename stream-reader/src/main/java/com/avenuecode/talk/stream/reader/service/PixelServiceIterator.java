@@ -9,22 +9,24 @@ import java.util.List;
 
 import org.apache.commons.fileupload.MultipartStream;
 
-import com.avenuecode.talk.stream.reader.controller.model.Pixel;
+import com.avenuecode.talk.stream.reader.model.Pixel;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class PixelServiceIterator implements Iterator<Pixel> {
 
+	//private InputStream in;
+	private MetteredInputStream in;
 	private String boundary;
 	private ByteArrayOutputStream bout;
 	private MultipartStream multipartStream;
-	private InputStream in;
+	
 	private Boolean nextPart;
 	
 	private Iterator<Pixel> currentPixelBucket;
 	
 	public PixelServiceIterator(InputStream in, String boundary) {
-		this.in = in;
+		this.in = new MetteredInputStream(in);
 		this.boundary = boundary;
 		this.nextPart = null;
 		this.currentPixelBucket = new ArrayList<Pixel>().iterator();
@@ -91,5 +93,8 @@ public class PixelServiceIterator implements Iterator<Pixel> {
 			return null;
 		}
 	}
-
+	
+	public long getTotalBytesRead() {
+		return in.getTotalBytesRead();
+	}
 }

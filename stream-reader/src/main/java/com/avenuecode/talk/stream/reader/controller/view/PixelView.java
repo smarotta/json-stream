@@ -15,7 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.SwingUtilities;
 
-import com.avenuecode.talk.stream.reader.controller.model.Pixel;
+import com.avenuecode.talk.stream.reader.model.Pixel;
+import com.avenuecode.talk.stream.reader.model.Statistics;
 
 public class PixelView extends Canvas implements View<Pixel, PixelViewListener>, ActionListener {
 
@@ -122,7 +123,8 @@ public class PixelView extends Canvas implements View<Pixel, PixelViewListener>,
 		repaint(0, 0, 150, 50);
 	}
 	
-	public void finishFrame() {
+	public void finishFrame(Statistics statistics) {
+		System.out.println(String.format("Read an average of %.2f MB/s", statistics.getMegaBytesPerSecond()));
 		timeTaken = System.currentTimeMillis() - frameStart;
 	}
 

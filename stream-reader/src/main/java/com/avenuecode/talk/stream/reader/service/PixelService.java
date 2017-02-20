@@ -6,7 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-import com.avenuecode.talk.stream.reader.controller.model.Pixel;
+import com.avenuecode.talk.stream.reader.model.Pixel;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
